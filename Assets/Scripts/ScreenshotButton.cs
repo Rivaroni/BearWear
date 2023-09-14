@@ -10,8 +10,8 @@ public class ScreenshotButton : MonoBehaviour
     private void Start()
     {
         // Create the Screenshots folder if it doesn't exist in the project
-        string screenshotPath = Path.Combine(Application.dataPath, "Screenshots");
-        Directory.CreateDirectory(screenshotPath);
+        string screenshotFolderPath = Path.Combine(Application.dataPath, "Screenshots");
+        Directory.CreateDirectory(screenshotFolderPath);
     }
 
     private void Update()
@@ -40,10 +40,11 @@ public class ScreenshotButton : MonoBehaviour
         string timestamp = System.DateTime.Now.ToString("yyyyMMddHHmmss");
         string screenshotFilename = "Screenshot_" + timestamp + ".png";
 
-        // Construct the full path to save the screenshot inside the "Screenshots" folder
-        string screenshotPath = Path.Combine(Application.dataPath, "Screenshots", screenshotFilename);
+        // Construct the full path to save the screenshot on the desktop
+        string desktopPath = System.Environment.GetFolderPath(System.Environment.SpecialFolder.Desktop);
+        string screenshotPath = Path.Combine(desktopPath, screenshotFilename);
 
-        // Encode the texture as a PNG and save it to the "Screenshots" folder
+        // Encode the texture as a PNG and save it to the desktop
         byte[] bytes = texture.EncodeToPNG();
         File.WriteAllBytes(screenshotPath, bytes);
 
