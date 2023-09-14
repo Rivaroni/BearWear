@@ -24,7 +24,7 @@ public class ScreenshotButton : MonoBehaviour
         yield return new WaitForEndOfFrame();
 
         // Calculate the capture area to capture the left half of the screen
-        float captureWidth = Screen.width / 2; // Adjust the width to capture only the left half
+        float captureWidth = Screen.width / 1.6f; // Adjust the width to capture only the left half
         float captureHeight = Screen.height;
         float captureX = 0; // Start capturing from the left edge of the screen
         float captureY = 0;
