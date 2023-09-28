@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class RandomClothingScript : MonoBehaviour
 {
+    public AudioClip clickSfx;
+
     public Sprite[] bearColorSprites;
     public Sprite[] bgSprites;
     public Sprite[] hatSprites;
@@ -26,6 +28,7 @@ public class RandomClothingScript : MonoBehaviour
 
     public void RandomClothingSelection()
     {
+        AudioManagerScript.instance.PlaySoundEffect(clickSfx);
         // Randomly select sprites for each clothing item
         bearSpriteRenderer.sprite = RandomSprite(bearColorSprites);
         bgSpriteRenderer.sprite = RandomSprite(bgSprites);

@@ -6,6 +6,8 @@ using UnityEngine.UI;
 public class ScreenshotButton : MonoBehaviour
 {
     public Image cameraImage;
+    public AudioClip camSfx;
+    public GameObject UI;
 
     private void Start()
     {
@@ -21,6 +23,8 @@ public class ScreenshotButton : MonoBehaviour
 
     private IEnumerator Screenshot()
     {
+        UI.SetActive(false);
+        AudioManagerScript.instance.PlaySoundEffect(camSfx);
         yield return new WaitForEndOfFrame();
 
         // Calculate the capture area to capture the left half of the screen
@@ -52,6 +56,7 @@ public class ScreenshotButton : MonoBehaviour
         Destroy(texture);
 
         cameraImage.enabled = true;
+        UI.SetActive(true);
     }
 
     public void TakeScreenshot()

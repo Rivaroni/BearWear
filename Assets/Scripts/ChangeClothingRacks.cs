@@ -1,9 +1,15 @@
+using System.Collections;
 using UnityEngine;
 
 public class ChangeClothingRacks : MonoBehaviour
 {
     public GameObject[] clothingRacks;
     public int rackIndex = 0;
+    public AudioClip clickSfx;
+    public Animator animator;
+
+    private bool isAnimating = false;
+    public float seconds = 0.9f;
 
     // Start is called before the first frame update
     void Start()
@@ -13,33 +19,78 @@ public class ChangeClothingRacks : MonoBehaviour
 
     public void NextBG()
     {
-        // Increment the index and wrap around if it goes out of bounds
-        rackIndex += 1;
-
-        if (rackIndex >= clothingRacks.Length)
+        if (!isAnimating)
         {
-            rackIndex = 0;
+            AudioManagerScript.instance.PlaySoundEffect(clickSfx, 0.3f);
+
+            // Set the "DropCurtain" trigger
+            animator.SetTrigger("DropCurtain");
+
+            // Start a coroutine to wait for the animation to complete
+            StartCoroutine(WaitForAnimation("DropCurtain", "next"));
+
+            // Rest of your code after the animation
+            DeactivateGameObjects();
         }
-        Debug.Log("Next Func" + rackIndex);
-        DeactivateGameObjects();
     }
 
     public void PrevBG()
     {
-        // Decrement the index and wrap around if it goes out of bounds
-        rackIndex -= 1;
-
-        if (rackIndex < 0)
+        if (!isAnimating)
         {
-            rackIndex = clothingRacks.Length - 1;
-        }
+            AudioManagerScript.instance.PlaySoundEffect(clickSfx, 0.3f);
 
-        Debug.Log("Prev Func" + rackIndex);
-        DeactivateGameObjects();
+            // Set the "DropCurtain" trigger
+            animator.SetTrigger("DropCurtain");
+
+            // Start a coroutine to wait for the animation to complete
+            StartCoroutine(WaitForAnimation("DropCurtain", "prev"));
+
+        }
     }
+
+    private IEnumerator WaitForAnimation(string animationTrigger, string state)
+    {
+        // Ensure the animator is not null
+        if (animator != null)
+        {
+            isAnimating = true;
+
+            // Wait for the animation to complete
+            yield return new WaitForSeconds(seconds);
+
+            if(state == "prev")
+            {
+                rackIndex -= 1;
+
+                if (rackIndex < 0)
+                {
+                    rackIndex = clothingRacks.Length - 1;
+                }
+            }
+            else
+            {
+                rackIndex += 1;
+
+                if (rackIndex >= clothingRacks.Length)
+                {
+                    rackIndex = 0;
+                }
+
+            }
+
+            // Rest of your code after the animation
+            DeactivateGameObjects();
+
+            isAnimating = false;
+        }
+    }
+
+
 
     private void DeactivateGameObjects()
     {
+        Debug.Log("in deactive func");
         for (int i = 0; i < clothingRacks.Length; i++)
         {
             if (i == rackIndex)
