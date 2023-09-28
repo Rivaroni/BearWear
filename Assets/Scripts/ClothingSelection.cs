@@ -13,7 +13,7 @@ public class ClothingSelection : MonoBehaviour
     private void Start()
     {
         clothingSprite = GetComponent<Image>().sprite;
-        if(optionalSprite == null)
+        if (optionalSprite == null)
         {
             optionalSprite = bearClothingSprite;
         }
@@ -23,12 +23,20 @@ public class ClothingSelection : MonoBehaviour
 
     public void ActivateShirt()
     {
-        // Deactivate all shirts
-        DeactivateClothingLayer();
+        // If the selected sprite is the same as the clicked sprite, deactivate it
+        if (bearClothingSprite.sprite == clothingSprite)
+        {
+            DeactivateClothingLayer();
+        }
+        else
+        {
+            // Deactivate all shirts
+            DeactivateClothingLayer();
 
-        // Activate the selected shirt
-        AudioManagerScript.instance.PlaySoundEffect(selectedClip);
-        bearClothingSprite.sprite = clothingSprite;
+            // Activate the selected shirt
+            AudioManagerScript.instance.PlaySoundEffect(selectedClip);
+            bearClothingSprite.sprite = clothingSprite;
+        }
     }
 
     public void DeactivateClothingLayer()
@@ -38,7 +46,7 @@ public class ClothingSelection : MonoBehaviour
             optionalSprite = bearClothingSprite;
         }
 
-        if(start)
+        if (start)
         {
             start = false;
             bearClothingSprite.sprite = null;
