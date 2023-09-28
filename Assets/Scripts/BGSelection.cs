@@ -17,12 +17,26 @@ public class BGSelection : MonoBehaviour
 
     public void NextBG()
     {
+        // Check if bgSprites is empty or bearSprite is null
+        if (bgSprites.Length == 0 || bearSprite == null)
+        {
+            Debug.LogError("bgSprites is empty or bearSprite is not set.");
+            return;
+        }
+
         bgSpriteIndex = (bgSpriteIndex + 1) % bgSprites.Length;
         UpdateBearSprite();
     }
 
     public void PrevBG()
     {
+        // Check if bgSprites is empty or bearSprite is null
+        if (bgSprites.Length == 0 || bearSprite == null)
+        {
+            Debug.LogError("bgSprites is empty or bearSprite is not set.");
+            return;
+        }
+
         bgSpriteIndex = (bgSpriteIndex - 1 + bgSprites.Length) % bgSprites.Length;
         UpdateBearSprite();
     }
