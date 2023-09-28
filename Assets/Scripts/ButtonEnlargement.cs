@@ -5,24 +5,23 @@ using DG.Tweening;
 
 public class ButtonEnlargement : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
-    private Button button;
+    public Image image;
     private Vector3 originalScale;
 
     private void Start()
     {
-        button = GetComponent<Button>();
-        originalScale = button.transform.localScale;
+        originalScale = image.transform.localScale;
     }
 
     public void OnPointerEnter(PointerEventData eventData)
     {
         // Enlarge the button smoothly using DOTween
-        button.transform.DOScale(originalScale * 1.1f, 0.2f); // You can adjust the duration
+        image.transform.DOScale(originalScale * 1.05f, 0.2f); // You can adjust the duration
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
         // Return the button to its original size smoothly
-        button.transform.DOScale(originalScale, 0.2f); // You can adjust the duration
+        image.transform.DOScale(originalScale, 0.2f); // You can adjust the duration
     }
 }
