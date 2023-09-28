@@ -1,13 +1,10 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class BGSelection : MonoBehaviour
 {
     public SpriteRenderer bearSprite;
     public Sprite[] bgSprites;
-    private int bgSpriteIndex = 0;
+    public int bgSpriteIndex = 0;
 
     // Start is called before the first frame update
     void Start()
@@ -17,33 +14,33 @@ public class BGSelection : MonoBehaviour
 
     public void NextBG()
     {
-        // Check if bgSprites is empty or bearSprite is null
-        if (bgSprites.Length == 0 || bearSprite == null)
-        {
-            Debug.LogError("bgSprites is empty or bearSprite is not set.");
-            return;
-        }
+        // Increment the index and wrap around if it goes out of bounds
+        bgSpriteIndex += 1;
 
-        bgSpriteIndex = (bgSpriteIndex + 1) % bgSprites.Length;
+        if (bgSpriteIndex >= bgSprites.Length)
+        {
+            bgSpriteIndex = 0;
+        }
+        Debug.Log("Next Func" + bgSpriteIndex);
         UpdateBearSprite();
     }
 
     public void PrevBG()
     {
-        // Check if bgSprites is empty or bearSprite is null
-        if (bgSprites.Length == 0 || bearSprite == null)
+        // Decrement the index and wrap around if it goes out of bounds
+        bgSpriteIndex -= 1;
+   
+        if (bgSpriteIndex < 0)
         {
-            Debug.LogError("bgSprites is empty or bearSprite is not set.");
-            return;
+            bgSpriteIndex = bgSprites.Length - 1;
         }
 
-        bgSpriteIndex = (bgSpriteIndex - 1 + bgSprites.Length) % bgSprites.Length;
+        Debug.Log("Prev Func" + bgSpriteIndex);
         UpdateBearSprite();
     }
 
     private void UpdateBearSprite()
     {
-        Debug.Log(bgSpriteIndex);
         bearSprite.sprite = bgSprites[bgSpriteIndex];
     }
 }
