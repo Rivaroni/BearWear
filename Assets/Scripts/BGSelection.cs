@@ -13,6 +13,25 @@ public class BGSelection : MonoBehaviour
         UpdateBearSprite();
     }
 
+    public void InitializeIndex()
+    {
+        // Get the currently displayed sprite
+        Sprite currentSprite = bearSprite.sprite;
+
+        // Search for the current sprite in the bgSprites array
+        for (int i = 0; i < bgSprites.Length; i++)
+        {
+            if (bgSprites[i] == currentSprite)
+            {
+                bgSpriteIndex = i;
+                return;
+            }
+        }
+
+        // If the current sprite is not found, default to the first sprite in the array
+        bgSpriteIndex = 0;
+    }
+
     public void NextBG()
     {
         AudioManagerScript.instance.PlaySoundEffect(clickSfx, 0.3f);

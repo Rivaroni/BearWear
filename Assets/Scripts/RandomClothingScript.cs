@@ -26,6 +26,8 @@ public class RandomClothingScript : MonoBehaviour
     public SpriteRenderer socksSpriteRenderer;
     public SpriteRenderer shoesSpriteRenderer;
 
+    public BGSelection[] bgScript;
+
     public void RandomClothingSelection()
     {
         AudioManagerScript.instance.PlaySoundEffect(clickSfx);
@@ -39,6 +41,12 @@ public class RandomClothingScript : MonoBehaviour
         pantsSpriteRenderer.sprite = RandomSprite(pantsSprites);
         socksSpriteRenderer.sprite = RandomSprite(socksSprites);
         shoesSpriteRenderer.sprite = RandomSprite(shoesSprites);
+
+        for(int i = 0; i < bgScript.Length; i++)
+        {
+            bgScript[i].InitializeIndex();
+        }
+        
     }
 
     private Sprite RandomSprite(Sprite[] spriteArray)
