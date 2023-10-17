@@ -11,6 +11,11 @@ public class GalleryLoader : MonoBehaviour
         SceneManager.LoadScene("Gallery");
     }
 
+    public void MainLoad()
+    {
+        SceneManager.LoadScene("Main");
+    }
+
     // Start is called before the first frame update
     void Start()
     {
