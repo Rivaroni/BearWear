@@ -90,7 +90,6 @@ public class ChangeClothingRacks : MonoBehaviour
 
     private void DeactivateGameObjects()
     {
-        Debug.Log("in deactive func");
         for (int i = 0; i < clothingRacks.Length; i++)
         {
             if (i == rackIndex)
