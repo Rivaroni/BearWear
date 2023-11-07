@@ -28,33 +28,18 @@ public class RandomClothingScript : MonoBehaviour
 
     public BGSelection[] bgScript;
 
-    public void RandomClothingSelection()
+    private Sprite RandomSprite(Sprite[] spriteArray, bool allowEmpty = false)
     {
-        AudioManagerScript.instance.PlaySoundEffect(clickSfx);
-        // Randomly select sprites for each clothing item
-        bearSpriteRenderer.sprite = RandomSprite(bearColorSprites);
-        bgSpriteRenderer.sprite = RandomSprite(bgSprites);
-        hatSpriteRenderer.sprite = RandomSprite(hatSprites);
-        accessoriesSpriteRenderer.sprite = RandomSprite(accessoriesSprites);
-        shirtSpriteRenderer.sprite = RandomSprite(shirtSprites);
-        jacketSpriteRenderer.sprite = RandomSprite(jacketSprites);
-        pantsSpriteRenderer.sprite = RandomSprite(pantsSprites);
-        socksSpriteRenderer.sprite = RandomSprite(socksSprites);
-        shoesSpriteRenderer.sprite = RandomSprite(shoesSprites);
-
-        for(int i = 0; i < bgScript.Length; i++)
-        {
-            bgScript[i].InitializeIndex();
-        }
-        
-    }
-
-    private Sprite RandomSprite(Sprite[] spriteArray)
-    {
-        // Check if the spriteArray is empty
+        // Check if the spriteArray is empty or null
         if (spriteArray == null || spriteArray.Length == 0)
         {
-            Debug.LogError("The sprite array is empty.");
+            Debug.LogError("The sprite array is empty or null.");
+            return null; // Or alternatively, return a default sprite
+        }
+
+        // Decide whether to leave this slot empty, only if allowed
+        if (allowEmpty && Random.value < 0.35f) // 20% chance to leave empty
+        {
             return null;
         }
 
@@ -64,4 +49,27 @@ public class RandomClothingScript : MonoBehaviour
         // Return the random sprite
         return spriteArray[randomIndex];
     }
+
+    public void RandomClothingSelection()
+    {
+        AudioManagerScript.instance.PlaySoundEffect(clickSfx);
+        // Ensure bearSpriteRenderer.sprite is never null by not allowing an empty selection
+        bearSpriteRenderer.sprite = RandomSprite(bearColorSprites, false); // false to not allow empty
+                                                                           // For other sprites, it's okay to be null as per your original logic
+        bgSpriteRenderer.sprite = RandomSprite(bgSprites, true);
+        hatSpriteRenderer.sprite = RandomSprite(hatSprites, true);
+        accessoriesSpriteRenderer.sprite = RandomSprite(accessoriesSprites, true);
+        shirtSpriteRenderer.sprite = RandomSprite(shirtSprites, true);
+        jacketSpriteRenderer.sprite = RandomSprite(jacketSprites, true);
+        pantsSpriteRenderer.sprite = RandomSprite(pantsSprites, true);
+        socksSpriteRenderer.sprite = RandomSprite(socksSprites, true);
+        shoesSpriteRenderer.sprite = RandomSprite(shoesSprites, true);
+
+        for (int i = 0; i < bgScript.Length; i++)
+        {
+            bgScript[i].InitializeIndex();
+        }
+    }
+
+
 }
