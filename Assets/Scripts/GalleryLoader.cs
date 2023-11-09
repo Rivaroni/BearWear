@@ -8,12 +8,19 @@ public class GalleryLoader : MonoBehaviour
 
     public void GalleryLoad()
     {
-        SceneManager.LoadScene("Gallery");
+        StartCoroutine(WaitForAnim("Gallery"));
+       
     }
 
     public void MainLoad()
     {
-        SceneManager.LoadScene("Main");
+        StartCoroutine(WaitForAnim("Main"));
+    }
+
+    private IEnumerator WaitForAnim(string sceneName)
+    {
+        yield return new WaitForSeconds(2f);
+        SceneManager.LoadScene(sceneName);
     }
 
 }

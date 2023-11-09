@@ -5,13 +5,17 @@ using System.IO;
 
 public class GalleryManager : MonoBehaviour
 {
-    public GameObject[] imageSlots; // Assume this is assigned in the editor with your 8 slots
+    public GameObject[] imageSlots;
     private List<string> imagePaths = new List<string>();
     private int currentPage = 0;
-    private int imagesPerPage = 8; // Or however many slots you have
+    private int imagesPerPage = 8;
 
-    public GameObject expandedImageContainer; // Assign this in the inspector
+    public GameObject expandedImageContainer;
     public Image expandedImage;
+
+    // TODO: Make buttons disable if ur at end of page
+    public Button nextButton;
+    public Button prevButton;
 
     private void Start()
     {
@@ -46,18 +50,17 @@ public class GalleryManager : MonoBehaviour
         }
     }
 
-    // This method should be called by an event trigger on the image GameObject
     public void ExpandImage(Image imageToExpand)
     {
-        expandedImage.sprite = imageToExpand.sprite; // Set the sprite for the image
-        expandedImageContainer.SetActive(true); // Activate the container GameObject
-                                                // Additional code for transitions or animations
+        expandedImage.sprite = imageToExpand.sprite; 
+        expandedImageContainer.SetActive(true);
+        // Additional code for transitions or animations
     }
 
 
     public void CloseExpandedImage()
     {
-        expandedImageContainer.SetActive(false); // Deactivate the container GameObject
+        expandedImageContainer.SetActive(false);
     }
 
     private void ShowPage(int pageIndex)
