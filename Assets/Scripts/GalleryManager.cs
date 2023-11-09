@@ -10,6 +10,9 @@ public class GalleryManager : MonoBehaviour
     private int currentPage = 0;
     private int imagesPerPage = 8; // Or however many slots you have
 
+    public GameObject expandedImageContainer; // Assign this in the inspector
+    public Image expandedImage;
+
     private void Start()
     {
         LoadImages();
@@ -41,6 +44,20 @@ public class GalleryManager : MonoBehaviour
             currentPage--;
             ShowPage(currentPage);
         }
+    }
+
+    // This method should be called by an event trigger on the image GameObject
+    public void ExpandImage(Image imageToExpand)
+    {
+        expandedImage.sprite = imageToExpand.sprite; // Set the sprite for the image
+        expandedImageContainer.SetActive(true); // Activate the container GameObject
+                                                // Additional code for transitions or animations
+    }
+
+
+    public void CloseExpandedImage()
+    {
+        expandedImageContainer.SetActive(false); // Deactivate the container GameObject
     }
 
     private void ShowPage(int pageIndex)
