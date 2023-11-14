@@ -15,13 +15,18 @@ public class ButtonEnlargement : MonoBehaviour, IPointerEnterHandler, IPointerEx
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        // Enlarge the button smoothly using DOTween
-        image.transform.DOScale(originalScale * 1.05f, 0.2f); // You can adjust the duration
+        if(gameObject.GetComponent<Button>().interactable)
+        {
+            // Enlarge the button smoothly using DOTween
+            image.transform.DOScale(originalScale * 1.05f, 0.2f); // You can adjust the duration
+        }
+        
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        // Return the button to its original size smoothly
-        image.transform.DOScale(originalScale, 0.2f); // You can adjust the duration
+        if (gameObject.GetComponent<Button>().interactable)
+            // Return the button to its original size smoothly
+            image.transform.DOScale(originalScale, 0.2f); // You can adjust the duration
     }
 }

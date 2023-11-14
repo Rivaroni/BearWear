@@ -7,6 +7,7 @@ public class SaveFitManager : MonoBehaviour
     private List<Sprite[]> savedClothings = new List<Sprite[]>();
 
     public SpriteRenderer[] bearClothingRef;
+    public GameObject overwriteUI; // Reference to your overwrite UI GameObject
 
     private void Start()
     {
@@ -15,6 +16,8 @@ public class SaveFitManager : MonoBehaviour
         {
             savedClothings.Add(new Sprite[bearClothingRef.Length]);
         }
+
+        overwriteUI.SetActive(false); // Hide overwrite UI on start
     }
 
     public void SaveFit()
@@ -31,8 +34,24 @@ public class SaveFitManager : MonoBehaviour
         }
 
         Debug.Log("All slots full");
-        // All slots are full, handle this case appropriately.
+        // All slots are full, show overwrite UI.
+        overwriteUI.SetActive(true);
     }
+
+    public void OverwriteSave(int index)
+    {
+        Debug.Log("Overwrite");
+        if (index < 1 || index > savedClothings.Count)
+        {
+            Debug.Log("Invalid slot index.");
+            return;
+        }
+
+        int slotIndex = index - 1;
+        StoreFit(savedClothings[slotIndex]);
+        overwriteUI.SetActive(false); // Hide overwrite UI after overwriting
+    }
+
 
     public void LoadFit(int index)
     {

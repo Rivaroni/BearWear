@@ -17,10 +17,14 @@ public class GalleryManager : MonoBehaviour
     public Button nextButton;
     public Button prevButton;
 
+    private int currentExpandedImageIndex = -1; // -1 means no image is expanded
+
+
     private void Start()
     {
         LoadImages();
         ShowPage(currentPage);
+        UpdateButtonStates();
     }
 
     private void LoadImages()
@@ -30,6 +34,7 @@ public class GalleryManager : MonoBehaviour
         {
             imagePaths.AddRange(Directory.GetFiles(screenshotsPath, "*.png"));
         }
+        UpdateButtonStates(); // Update the button states after loading images
     }
 
     public void ShowNextPage()
@@ -39,6 +44,7 @@ public class GalleryManager : MonoBehaviour
             currentPage++;
             ShowPage(currentPage);
         }
+        UpdateButtonStates();
     }
 
     public void ShowPreviousPage()
@@ -48,20 +54,59 @@ public class GalleryManager : MonoBehaviour
             currentPage--;
             ShowPage(currentPage);
         }
+        UpdateButtonStates();
+    }
+
+    private void UpdateButtonStates()
+    {
+        // Enable or disable the next button based on whether there is a next page
+        nextButton.interactable = (currentPage + 1) * imagesPerPage < imagePaths.Count;
+
+        // Enable or disable the previous button based on whether there is a previous page
+        prevButton.interactable = currentPage > 0;
     }
 
     public void ExpandImage(Image imageToExpand)
     {
-        expandedImage.sprite = imageToExpand.sprite; 
-        expandedImageContainer.SetActive(true);
-        // Additional code for transitions or animations
+        // Assuming imageToExpand.name is set to a string that represents an integer
+        if (int.TryParse(imageToExpand.name, out int imageIndex))
+        {
+            currentExpandedImageIndex = currentPage * imagesPerPage + imageIndex;
+            expandedImage.sprite = imageToExpand.sprite;
+            expandedImageContainer.SetActive(true);
+            // Additional code for transitions or animations
+        }
+        else
+        {
+            Debug.LogError("The name of the image could not be converted to an int: " + imageToExpand.name);
+        }
     }
 
+    public void DeleteImage()
+    {
+        if (currentExpandedImageIndex != -1 && currentExpandedImageIndex < imagePaths.Count)
+        {
+            File.Delete(imagePaths[currentExpandedImageIndex]);
+            imagePaths.RemoveAt(currentExpandedImageIndex);
+            CloseExpandedImage();
+            ShowPage(currentPage);
+            if (currentPage > 0 && currentPage * imagesPerPage >= imagePaths.Count)
+            {
+                currentPage--;
+            }
+            ShowPage(currentPage); // Refresh the gallery view
+            currentExpandedImageIndex = -1;
+        }
+        UpdateButtonStates(); // Update the button states after deleting an image
+    }
 
     public void CloseExpandedImage()
     {
         expandedImageContainer.SetActive(false);
+        // Reset the current expanded image index
+        currentExpandedImageIndex = -1;
     }
+
 
     private void ShowPage(int pageIndex)
     {
