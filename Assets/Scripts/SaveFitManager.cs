@@ -3,103 +3,186 @@ using UnityEngine;
 
 public class SaveFitManager : MonoBehaviour
 {
-    // List to hold saved clothing arrays
-    private List<Sprite[]> savedClothings = new List<Sprite[]>();
+    [System.Serializable]
+    public class Outfit
+    {
+        public List<string> clothingItems; // Ensure this is public or [SerializeField] if private
 
+        public Outfit(List<string> clothingItems)
+        {
+            this.clothingItems = clothingItems ?? new List<string>();
+        }
+    }
+
+    [System.Serializable]
+    private class Serialization<T>
+    {
+        [SerializeField]
+        public T[] items;
+
+        public Serialization(T[] items)
+        {
+            this.items = items;
+        }
+    }
+
+    private List<Outfit> savedOutfits = new List<Outfit>();
     public SpriteRenderer[] bearClothingRef;
-    public GameObject overwriteUI; // Reference to your overwrite UI GameObject
+    public GameObject overwriteUI;
+    private const string SaveKey = "SavedFits";
+    public SpriteManager spriteManager; // Assumed to be a class that manages Sprites
 
     private void Start()
     {
-        // Initialize the list with a specific number of slots.
-        for (int i = 0; i < 5; i++)
-        {
-            savedClothings.Add(new Sprite[bearClothingRef.Length]);
-        }
+        overwriteUI.SetActive(false);
+        LoadAllFits();
 
-        overwriteUI.SetActive(false); // Hide overwrite UI on start
+        //RemoveAllPlayerPrefs();
+
+        // Initialize empty outfits if none are loaded
+        if (savedOutfits.Count == 0)
+        {
+            for (int i = 0; i < 5; i++)
+            {
+                savedOutfits.Add(new Outfit(new List<string>(new string[bearClothingRef.Length])));
+            }
+        }
     }
 
     public void SaveFit()
     {
-        Debug.Log("Save");
-        for (int i = 0; i < savedClothings.Count; i++)
+        for (int i = 0; i < savedOutfits.Count; i++)
         {
-            if (IsArrayEmpty(savedClothings[i]))
+            if (IsOutfitEmpty(savedOutfits[i]))
             {
-                Debug.Log($"Save in slot {i + 1}");
-                StoreFit(savedClothings[i]);
-                return; // Break out of the loop once we've saved the fit
+                Debug.Log($"Saving outfit in slot {i + 1}.");
+                OverwriteSave(i + 1);
+                return;
             }
         }
 
-        Debug.Log("All slots full");
-        // All slots are full, show overwrite UI.
+        Debug.Log("All slots full, please overwrite an existing slot.");
         overwriteUI.SetActive(true);
     }
 
-    public void OverwriteSave(int index)
+    private void SaveAllFits()
     {
-        Debug.Log("Overwrite");
-        if (index < 1 || index > savedClothings.Count)
-        {
-            Debug.Log("Invalid slot index.");
-            return;
-        }
-
-        int slotIndex = index - 1;
-        StoreFit(savedClothings[slotIndex]);
-        overwriteUI.SetActive(false); // Hide overwrite UI after overwriting
+        Serialization<Outfit> outfitSerialization = new Serialization<Outfit>(savedOutfits.ToArray());
+        string json = JsonUtility.ToJson(outfitSerialization);
+        PlayerPrefs.SetString(SaveKey, json);
+        PlayerPrefs.Save();
+        Debug.Log("Saved outfits: " + json);
     }
 
-
-    public void LoadFit(int index)
+    private void LoadAllFits()
     {
-        Debug.Log("Load");
-        // Subtract 1 from index because list indices are 0-based
-        if (index < 1 || index > savedClothings.Count)
+        if (PlayerPrefs.HasKey(SaveKey))
         {
-            Debug.Log("Invalid slot index.");
-            return;
-        }
-
-        int slotIndex = index - 1;
-        if (!IsArrayEmpty(savedClothings[slotIndex]))
-        {
-            ReloadFit(savedClothings[slotIndex]);
+            string json = PlayerPrefs.GetString(SaveKey);
+            Serialization<Outfit> outfitSerialization = JsonUtility.FromJson<Serialization<Outfit>>(json);
+            if (outfitSerialization != null && outfitSerialization.items != null)
+            {
+                savedOutfits = new List<Outfit>(outfitSerialization.items);
+            }
+            Debug.Log("Loaded outfits: " + json);
         }
         else
         {
-            Debug.Log($"No fit saved in slot {index} to load.");
+            Debug.Log("No saved data to load.");
         }
     }
 
-    void StoreFit(Sprite[] savedClothing)
+    public void LoadFit(int index)
     {
-        for (int i = 0; i < bearClothingRef.Length; i++)
+        if (index < 1 || index > savedOutfits.Count)
         {
-            savedClothing[i] = bearClothingRef[i].sprite;
+            Debug.Log("Invalid slot index.");
+            return;
         }
-    }
 
-    void ReloadFit(Sprite[] savedClothing)
-    {
-        for (int i = 0; i < bearClothingRef.Length; i++)
-        {
-            bearClothingRef[i].sprite = savedClothing[i];
-        }
-    }
+        Outfit outfit = savedOutfits[index - 1];
+        bool hasSavedItem = false;
 
-    private bool IsArrayEmpty(Sprite[] clothingArray)
-    {
-        // Assume array is not null as we initialize all in Start()
-        foreach (Sprite clothing in clothingArray)
+        for (int i = 0; i < outfit.clothingItems.Count; i++)
         {
-            if (clothing != null)
+            string spriteName = outfit.clothingItems[i];
+            if (!string.IsNullOrEmpty(spriteName))
             {
-                return false;
+                bearClothingRef[i].sprite = GetSpriteByName(spriteName);
+                hasSavedItem = true;
+            }
+            else
+            {
+                // If it's the first sprite and there's no saved sprite, set it to BearColor_4
+                if (i == 0)
+                {
+                    bearClothingRef[i].sprite = GetSpriteByName("BearColor_4");
+                }
+                else
+                {
+                    bearClothingRef[i].sprite = null;
+                }
             }
         }
-        return true;
+
+        if (!hasSavedItem)
+        {
+            Debug.Log($"No outfits saved in loadout {index}, defaulting first sprite to BearColor_4.");
+            // TODO: Here you will trigger your UI popup in the future
+        }
     }
+
+
+
+    public void OverwriteSave(int index)
+    {
+        if (index < 1 || index > savedOutfits.Count)
+        {
+            Debug.Log("Invalid slot index.");
+            return;
+        }
+
+        List<string> currentOutfit = new List<string>();
+        foreach (var spriteRenderer in bearClothingRef)
+        {
+            currentOutfit.Add(spriteRenderer.sprite != null ? spriteRenderer.sprite.name : null);
+        }
+
+        savedOutfits[index - 1] = new Outfit(currentOutfit);
+        SaveAllFits();
+
+        overwriteUI.SetActive(false);
+    }
+
+    private Sprite GetSpriteByName(string name)
+    {
+        // Implement your logic to get a Sprite by its name
+        return spriteManager.GetSpriteByName(name);
+    }
+
+    private bool IsOutfitEmpty(Outfit outfit)
+    {
+        return outfit.clothingItems.TrueForAll(string.IsNullOrEmpty);
+    }
+
+    public void RemoveAllPlayerPrefs()
+    {
+        // Clear PlayerPrefs
+        PlayerPrefs.DeleteAll();
+        PlayerPrefs.Save();
+        Debug.Log("All PlayerPrefs have been removed.");
+
+        // Clear current outfits list
+        savedOutfits.Clear();
+
+        // Optionally reset the bearClothingRef sprites to a default state, if needed
+        foreach (var renderer in bearClothingRef)
+        {
+            renderer.sprite = null; // Or set it to a default sprite
+        }
+
+        // Log the removal
+        Debug.Log("All loadout saves have been removed from this session.");
+    }
+
 }
