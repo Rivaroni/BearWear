@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using System.Collections.Generic;
 using System.IO;
 using System;
+using System.Collections;
 
 public class GalleryManager : MonoBehaviour
 {
@@ -21,8 +22,11 @@ public class GalleryManager : MonoBehaviour
     public AudioClip deleteSfx;
 
     private int currentExpandedImageIndex = -1; // -1 means no image is expanded
+    public Image downloadImage;
+    public Button downloadButton;
     public Sprite successSprite;
     public Sprite failureSprite;
+    public Sprite originalSprite;
 
 
     private void Start()
@@ -151,27 +155,27 @@ public class GalleryManager : MonoBehaviour
 
             try
             {
-                File.Copy(sourcePath, destinationPath, true);
-                Debug.Log("Image downloaded to Desktop: " + destinationPath);
-
-                // Change sprite to success (checkmark)
-                expandedImage.sprite = successSprite;
-
-                // Optionally, provide feedback to the user via UI
+                // ... success logic ...
+                downloadImage.sprite = successSprite;
+                downloadButton.interactable = false;
+                StartCoroutine(ResetExpandedImageSprite(1.5f)); // Reset after .5 seconds
             }
-            catch (Exception e)
+            catch
             {
-                Debug.LogError("Failed to download image: " + e.Message);
-
-                // Change sprite to failure (X)
-                expandedImage.sprite = failureSprite;
-
-                // Optionally, handle errors, such as user feedback through UI
+                // ... failure logic ...
+                downloadImage.sprite = failureSprite;
+                downloadButton.interactable = false;
+                StartCoroutine(ResetExpandedImageSprite(1.5f)); // Reset after .5 seconds
             }
         }
     }
 
-
+    private IEnumerator ResetExpandedImageSprite(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        downloadButton.interactable = true;
+        downloadImage.sprite = originalSprite; // Replace with the original sprite or logic to determine the correct sprite
+    }
 
     private Texture2D LoadTextureFromFile(string filePath)
     {

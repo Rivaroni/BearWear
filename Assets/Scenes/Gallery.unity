@@ -1516,7 +1516,7 @@ MonoBehaviour:
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
     m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
     m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
-    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+    m_DisabledColor: {r: 1, g: 1, b: 1, a: 1}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
   m_SpriteState:
@@ -2943,7 +2943,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 16.097, y: -7.2061}
+  m_AnchoredPosition: {x: 16.097015, y: -7.2061005}
   m_SizeDelta: {x: 71.77429, y: 60.817795}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1973589423
@@ -3186,6 +3186,11 @@ MonoBehaviour:
   prevButton: {fileID: 1012179302}
   clickSfx: {fileID: 8300000, guid: 9bbca6fa6dda144359e060e8bd1d459d, type: 3}
   deleteSfx: {fileID: 8300000, guid: e93039d65256b4e01b5721f539809f14, type: 3}
+  downloadImage: {fileID: 1153286133}
+  downloadButton: {fileID: 1153286132}
+  successSprite: {fileID: 21300000, guid: b31ef5decd77b46e4ae303e47cd9371c, type: 3}
+  failureSprite: {fileID: 21300000, guid: bf6478fcc4a2d4a05917431d7539530f, type: 3}
+  originalSprite: {fileID: 21300000, guid: b6e2f14e0b78346e68e55c817a94dcea, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
