@@ -37,7 +37,7 @@ public class ButtonAnimationController : MonoBehaviour
     private void PlayAnimation()
     {
         // Play the specified animation
-        if(!sfxPlayed)
+        if(!sfxPlayed && AudioManagerScript.instance != null)
             AudioManagerScript.instance.PlaySoundEffect(curtainSfx, 1.0f);
 
         sfxPlayed = true;

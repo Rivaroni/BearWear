@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
 using System.IO;
+using System;
 
 public class GalleryManager : MonoBehaviour
 {
@@ -20,6 +21,8 @@ public class GalleryManager : MonoBehaviour
     public AudioClip deleteSfx;
 
     private int currentExpandedImageIndex = -1; // -1 means no image is expanded
+    public Sprite successSprite;
+    public Sprite failureSprite;
 
 
     private void Start()
@@ -136,6 +139,39 @@ public class GalleryManager : MonoBehaviour
             }
         }
     }
+
+    public void DownloadImage()
+    {
+        if (currentExpandedImageIndex != -1 && currentExpandedImageIndex < imagePaths.Count)
+        {
+            string sourcePath = imagePaths[currentExpandedImageIndex];
+            string fileName = Path.GetFileName(sourcePath);
+            string desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+            string destinationPath = Path.Combine(desktopPath, fileName);
+
+            try
+            {
+                File.Copy(sourcePath, destinationPath, true);
+                Debug.Log("Image downloaded to Desktop: " + destinationPath);
+
+                // Change sprite to success (checkmark)
+                expandedImage.sprite = successSprite;
+
+                // Optionally, provide feedback to the user via UI
+            }
+            catch (Exception e)
+            {
+                Debug.LogError("Failed to download image: " + e.Message);
+
+                // Change sprite to failure (X)
+                expandedImage.sprite = failureSprite;
+
+                // Optionally, handle errors, such as user feedback through UI
+            }
+        }
+    }
+
+
 
     private Texture2D LoadTextureFromFile(string filePath)
     {
