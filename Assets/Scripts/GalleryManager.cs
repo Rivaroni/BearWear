@@ -16,6 +16,8 @@ public class GalleryManager : MonoBehaviour
     // TODO: Make buttons disable if ur at end of page
     public Button nextButton;
     public Button prevButton;
+    public AudioClip clickSfx;
+    public AudioClip deleteSfx;
 
     private int currentExpandedImageIndex = -1; // -1 means no image is expanded
 
@@ -39,6 +41,8 @@ public class GalleryManager : MonoBehaviour
 
     public void ShowNextPage()
     {
+        AudioManagerScript.instance.PlaySoundEffect(clickSfx, 0.3f);
+
         if ((currentPage + 1) * imagesPerPage < imagePaths.Count)
         {
             currentPage++;
@@ -49,6 +53,8 @@ public class GalleryManager : MonoBehaviour
 
     public void ShowPreviousPage()
     {
+        AudioManagerScript.instance.PlaySoundEffect(clickSfx, 0.3f);
+
         if (currentPage > 0)
         {
             currentPage--;
@@ -68,6 +74,8 @@ public class GalleryManager : MonoBehaviour
 
     public void ExpandImage(Image imageToExpand)
     {
+        AudioManagerScript.instance.PlaySoundEffect(clickSfx, 0.3f);
+
         // Assuming imageToExpand.name is set to a string that represents an integer
         if (int.TryParse(imageToExpand.name, out int imageIndex))
         {
@@ -84,6 +92,8 @@ public class GalleryManager : MonoBehaviour
 
     public void DeleteImage()
     {
+        AudioManagerScript.instance.PlaySoundEffect(deleteSfx);
+
         if (currentExpandedImageIndex != -1 && currentExpandedImageIndex < imagePaths.Count)
         {
             File.Delete(imagePaths[currentExpandedImageIndex]);
@@ -102,6 +112,7 @@ public class GalleryManager : MonoBehaviour
 
     public void CloseExpandedImage()
     {
+        AudioManagerScript.instance.PlaySoundEffect(clickSfx, 0.5f);
         expandedImageContainer.SetActive(false);
         // Reset the current expanded image index
         currentExpandedImageIndex = -1;

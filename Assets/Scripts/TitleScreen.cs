@@ -8,6 +8,8 @@ public class ButtonAnimationController : MonoBehaviour
     public bool playAnimation = false;
     public static bool alreadyClicked = false;
     public GameObject clickToStart;
+    public AudioClip curtainSfx;
+    bool sfxPlayed = false;
 
     private void Start()
     {
@@ -25,8 +27,9 @@ public class ButtonAnimationController : MonoBehaviour
         }
         else
         {
-            button.onClick.AddListener(PlayAnimation);
-            alreadyClicked = true;
+            if(!alreadyClicked)
+                button.onClick.AddListener(PlayAnimation);
+                alreadyClicked = true;
         }
  
     }
@@ -34,12 +37,17 @@ public class ButtonAnimationController : MonoBehaviour
     private void PlayAnimation()
     {
         // Play the specified animation
+        if(!sfxPlayed)
+            AudioManagerScript.instance.PlaySoundEffect(curtainSfx, 1.0f);
+
+        sfxPlayed = true;
         animator.Play(animationName);
     }
 
     public void CloseAnimation()
     {
-        if(clickToStart.activeInHierarchy)
+        AudioManagerScript.instance.PlaySoundEffect(curtainSfx, 0.3f);
+        if (clickToStart.activeInHierarchy)
             clickToStart.SetActive(false);
         animator.Play("CloseCurtain");
     }

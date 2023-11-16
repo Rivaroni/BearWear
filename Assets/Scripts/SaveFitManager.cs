@@ -1,5 +1,8 @@
+using System;
 using System.Collections.Generic;
+using DG.Tweening;
 using UnityEngine;
+using TMPro;
 
 public class SaveFitManager : MonoBehaviour
 {
@@ -31,6 +34,9 @@ public class SaveFitManager : MonoBehaviour
     public GameObject overwriteUI;
     private const string SaveKey = "SavedFits";
     public SpriteManager spriteManager; // Assumed to be a class that manages Sprites
+    public TextMeshProUGUI notificationText;
+    public AudioClip clickSfx;
+
 
     private void Start()
     {
@@ -51,11 +57,14 @@ public class SaveFitManager : MonoBehaviour
 
     public void SaveFit()
     {
+        AudioManagerScript.instance.PlaySoundEffect(clickSfx, 0.3f);
+
         for (int i = 0; i < savedOutfits.Count; i++)
         {
             if (IsOutfitEmpty(savedOutfits[i]))
             {
                 Debug.Log($"Saving outfit in slot {i + 1}.");
+                ShowNotification($"Outfit saved in slot {i + 1}.");
                 OverwriteSave(i + 1);
                 return;
             }
@@ -94,6 +103,8 @@ public class SaveFitManager : MonoBehaviour
 
     public void LoadFit(int index)
     {
+        AudioManagerScript.instance.PlaySoundEffect(clickSfx, 0.3f);
+
         if (index < 1 || index > savedOutfits.Count)
         {
             Debug.Log("Invalid slot index.");
@@ -128,14 +139,19 @@ public class SaveFitManager : MonoBehaviour
         if (!hasSavedItem)
         {
             Debug.Log($"No outfits saved in loadout {index}, defaulting first sprite to BearColor_4.");
-            // TODO: Here you will trigger your UI popup in the future
+            ShowNotification($"No Outfit saved in loadout {index}.");
+            return;
         }
+
+        ShowNotification($"Outfit loaded from slot {index}.");
     }
 
 
 
     public void OverwriteSave(int index)
     {
+        AudioManagerScript.instance.PlaySoundEffect(clickSfx, 0.3f);
+
         if (index < 1 || index > savedOutfits.Count)
         {
             Debug.Log("Invalid slot index.");
@@ -149,6 +165,7 @@ public class SaveFitManager : MonoBehaviour
         }
 
         savedOutfits[index - 1] = new Outfit(currentOutfit);
+        ShowNotification($"Outfit saved in slot {index}.");
         SaveAllFits();
 
         overwriteUI.SetActive(false);
@@ -164,6 +181,19 @@ public class SaveFitManager : MonoBehaviour
     {
         return outfit.clothingItems.TrueForAll(string.IsNullOrEmpty);
     }
+
+    private void ShowNotification(string message)
+    {
+        notificationText.DOKill(); // Kill any ongoing animations on this object
+        notificationText.text = message;
+        notificationText.color = new Color(notificationText.color.r, notificationText.color.g, notificationText.color.b, 0); // Reset alpha to 0
+        notificationText.DOFade(1, 0.5f) // Fade in
+            .OnComplete(() =>
+            {
+                DOVirtual.DelayedCall(2, () => notificationText.DOFade(0, 0.5f)); // Fade out
+            });
+    }
+
 
     public void RemoveAllPlayerPrefs()
     {

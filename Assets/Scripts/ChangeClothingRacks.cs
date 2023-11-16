@@ -6,6 +6,7 @@ public class ChangeClothingRacks : MonoBehaviour
     public GameObject[] clothingRacks;
     public int rackIndex = 0;
     public AudioClip clickSfx;
+    public AudioClip curtainSfx;
     public Animator animator;
 
     private bool isAnimating = false;
@@ -55,7 +56,7 @@ public class ChangeClothingRacks : MonoBehaviour
         if (animator != null)
         {
             isAnimating = true;
-
+            AudioManagerScript.instance.PlaySoundEffect(curtainSfx, 1.0f);
             // Wait for the animation to complete
             yield return new WaitForSeconds(seconds);
 

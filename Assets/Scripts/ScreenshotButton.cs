@@ -2,12 +2,16 @@ using UnityEngine;
 using System.Collections;
 using System.IO;
 using UnityEngine.UI;
+using TMPro;
+using DG.Tweening;
+using System;
 
 public class ScreenshotButton : MonoBehaviour
 {
     public Image cameraImage;
     public AudioClip camSfx;
     public GameObject UI;
+    public TextMeshProUGUI notificationText;
 
     private string screenshotFolderPath;
 
@@ -58,7 +62,20 @@ public class ScreenshotButton : MonoBehaviour
 
         // Re-enable UI
         cameraImage.enabled = true;
+        ShowNotification($"Screenshot Taken. Saved to Gallery.");
         UI.SetActive(true);
+    }
+
+    private void ShowNotification(string message)
+    {
+        notificationText.DOKill(); // Kill any ongoing animations on this object
+        notificationText.text = message;
+        notificationText.color = new Color(notificationText.color.r, notificationText.color.g, notificationText.color.b, 0); // Reset alpha to 0
+        notificationText.DOFade(1, 0.5f) // Fade in
+            .OnComplete(() =>
+            {
+                DOVirtual.DelayedCall(2, () => notificationText.DOFade(0, 0.5f)); // Fade out
+            });
     }
 
     public void TakeScreenshot()

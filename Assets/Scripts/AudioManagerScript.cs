@@ -37,8 +37,9 @@ public class AudioManagerScript : MonoBehaviour
         soundEffectSource.PlayOneShot(clip);
     }
 
-    public void PlayMusic(AudioClip clip)
+    public void PlayMusic(AudioClip clip, float volume = 1.0f)
     {
+        musicSource.volume = volume;
         musicSource.clip = clip;
         musicSource.Play();
     }
