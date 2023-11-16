@@ -155,6 +155,7 @@ public class GalleryManager : MonoBehaviour
 
             try
             {
+                File.Copy(sourcePath, destinationPath, true);
                 // ... success logic ...
                 downloadImage.sprite = successSprite;
                 downloadButton.interactable = false;
